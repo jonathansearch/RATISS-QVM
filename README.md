@@ -58,3 +58,18 @@ counts = be.run(pop(1.0), shots=2000).result().get_counts()
 Paires de Bell uniquement (pas de GHZ-3+, documenté) ; déphasage gravité =
 MODÈLE (KH, KH_HOLE calibrés pour l'effet, pas dérivés) ; p2q = effectif
 (absorbe décomposition + dérive) ; NV→univers via constante normalisée.
+
+## 📡 Micro-ondes réelles : décohérence dérivée (cQED)
+
+`ratiss_qpu/microondes.py` : T1/T2 DÉRIVÉS des paramètres banc (pas phénoménologiques).
+Transmon 5 GHz + résonateur 7 GHz, g=100 MHz, Q_l=19608 → κ/2π=357 kHz,
+χ=-5 MHz, **T1=112µs** (Purcell 178µs + intrinsèque), **T2=224µs à 10mK**
+(Gambetta exact, n_th≈0) → **11.7µs à 100mK**. 5592 portes @40ns à 10mK.
+API plug-in dans `evolve_open` (remplace Jarmola pour les supraconducteurs).
+
+```bash
+python3 demos/decoherence_microondes.py  # specs + figure T1/T2 vs T + Ramsey
+pytest tests/test_microondes.py -q      # 6 tests (Purcell, Bose, Gambetta, evolve)
+```
+
+![microondes](demos/decoherence_microondes.png)

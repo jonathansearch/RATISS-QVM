@@ -92,6 +92,19 @@ class CavityQED:
     def coherent_ops(self, t_kelvin: float, gate_time_s: float) -> float:
         return float(self.t2_s(t_kelvin) / gate_time_s)
 
+<<<<<<< HEAD
+=======
+    @classmethod
+    def from_s21(cls, fit: dict, f_q_hz: float = 5.0e9,
+                 g_hz: float = 100.0e6, t_fridge_k: float = 0.010,
+                 t1_int_s: float = 300.0e-6) -> 'CavityQED':
+        """Construit depuis fit_s21() : f_r, Q_int, Q_ext MESURÉS -> T1/T2 banc."""
+        return cls(f_q_hz=f_q_hz, f_r_hz=float(fit['fr']),
+                   g_hz=g_hz, q_int=float(fit['Qint']),
+                   q_ext=float(fit['Qc']), t_fridge_k=t_fridge_k,
+                   t1_int_s=t1_int_s)
+
+>>>>>>> 4221ff7 (S21 reel : extracteur hanger (Ql 0.06%) + from_s21 -> T1/T2 mesures (20/20))
     def specs(self) -> dict:
         t1, t2 = self.t1_s(self.t_fridge_k), self.t2_s(self.t_fridge_k)
         return {'f_q_GHz': self.f_q_hz / 1e9, 'f_r_GHz': self.f_r_hz / 1e9,

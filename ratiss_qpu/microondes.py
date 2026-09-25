@@ -9,6 +9,7 @@ Modèle dispersif (|Δ| >> g) :
 - κ/2π = f_r / Q_l,  Q_l^-1 = Q_int^-1 + Q_ext^-1   (largeur résonateur)
 - χ = g²/Δ                                          (shift dispersif, rad/s)
 - γ_Purcell = κ (g/Δ)²                              (T1 limite Purcell)
+- filtre : T1p -> T1p x S, S = 1+(2.D_qf/k_f)²   (Reed/Houck 2010)
 - 1/T1 = 1/T1_Purcell + 1/T1_int                    (T1_int = diélectrique/qp)
 - n_th(f,T) = 1/(exp(hf/kT) - 1)                    (photons thermiques)
 - Γ_φ = (κ/2) Re[ sqrt((1+2iχ/κ)² + 8i n_th χ/κ) - 1 ]  (Gambetta exact)
@@ -56,6 +57,8 @@ class CavityQED:
     q_ext: float = 2.0e4       # Q couplage (lecture)
     t_fridge_k: float = 0.010  # 10 mK
     t1_int_s: float = 300.0e-6  # T1 intrinsèque (diélectrique, qp)
+    f_filt_hz: float = 7.0e9   # filtre Purcell (passe-bande, sur résonateur)
+    kappa_filt_hz: float = 0.0  # bande passante (Hz, cyclique) ; 0 = pas de filtre
 
     def q_loaded(self) -> float:
         return float(1.0 / (1.0 / self.q_int + 1.0 / self.q_ext))
@@ -71,9 +74,18 @@ class CavityQED:
         """Shift dispersif χ = g²/Δ (rad/s). Valide si |Δ| >> g."""
         return float((2 * np.pi * self.g_hz) ** 2 / self.delta())
 
+    def suppression(self) -> float:
+        """Facteur S du filtre Purcell (Reed/Houck 2010) : le filtre passe
+        f_r mais réfléchit f_q -> S = 1 + (2.D_qf/k_f)^2. 1.0 sans filtre."""
+        if self.kappa_filt_hz <= 0:
+            return 1.0
+        d = 2 * (self.f_q_hz - self.f_filt_hz) / self.kappa_filt_hz
+        return float(1.0 + d ** 2)
+
     def t1_purcell_s(self) -> float:
         g = 2 * np.pi * self.g_hz
-        return float(1.0 / (self.kappa() * (g / self.delta()) ** 2))
+        t1p = 1.0 / (self.kappa() * (g / self.delta()) ** 2)
+        return float(t1p * self.suppression())
 
     def gamma_phi(self, t_kelvin: float) -> float:
         nth = n_th(self.f_r_hz, t_kelvin)
@@ -92,8 +104,6 @@ class CavityQED:
     def coherent_ops(self, t_kelvin: float, gate_time_s: float) -> float:
         return float(self.t2_s(t_kelvin) / gate_time_s)
 
-<<<<<<< HEAD
-=======
     @classmethod
     def from_s21(cls, fit: dict, f_q_hz: float = 5.0e9,
                  g_hz: float = 100.0e6, t_fridge_k: float = 0.010,
@@ -104,7 +114,6 @@ class CavityQED:
                    q_ext=float(fit['Qc']), t_fridge_k=t_fridge_k,
                    t1_int_s=t1_int_s)
 
->>>>>>> 4221ff7 (S21 reel : extracteur hanger (Ql 0.06%) + from_s21 -> T1/T2 mesures (20/20))
     def specs(self) -> dict:
         t1, t2 = self.t1_s(self.t_fridge_k), self.t2_s(self.t_fridge_k)
         return {'f_q_GHz': self.f_q_hz / 1e9, 'f_r_GHz': self.f_r_hz / 1e9,
@@ -113,4 +122,5 @@ class CavityQED:
                 'chi_MHz': self.chi() / 2 / np.pi / 1e6,
                 'T1_Purcell_us': self.t1_purcell_s() * 1e6,
                 'T1_us': t1 * 1e6, 'T2_us': t2 * 1e6,
-                'n_th': n_th(self.f_r_hz, self.t_fridge_k)}
+                'n_th': n_th(self.f_r_hz, self.t_fridge_k),
+                'S_filtre': self.suppression()}

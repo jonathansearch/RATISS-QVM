@@ -51,3 +51,25 @@ def test_evolve_ultra_precis():
     for t in (0.2 * t2, t2):
         rho = evolve_open(rho0, H, t, c, 0.010)
         assert abs(abs(rho[0, 1]) - 0.5 * np.exp(-t / t2)) < 0.02, (t, rho)
+
+
+def test_purcell_sans_filtre():
+    from ratiss_qpu.microondes import CavityQED
+    c = CavityQED()
+    assert c.suppression() == 1.0
+    assert 150e-6 < c.t1_purcell_s() < 210e-6
+
+
+def test_purcell_filtre_protege():
+    from ratiss_qpu.microondes import CavityQED
+    b = CavityQED(kappa_filt_hz=10e6)
+    assert abs(b.suppression() - 160001) / 160001 < 0.01, b.suppression()
+    assert b.t1_purcell_s() > 10.0  # 28.5 s : Purcell vaincu
+    assert abs(b.t1_s() - 300e-6) / 300e-6 < 0.05  # limite intrinsèque
+    assert b.t2_s(0.01) > CavityQED().t2_s(0.01) * 2.0  # T2 x2.7
+
+
+def test_purcell_filtre_sur_qubit():
+    from ratiss_qpu.microondes import CavityQED
+    q = CavityQED(f_filt_hz=5e9, kappa_filt_hz=10e6)  # filtre sur qubit : rien
+    assert q.suppression() == 1.0

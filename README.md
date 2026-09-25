@@ -27,9 +27,10 @@
 | Jumeaux | backends IBM Kingston/Marrakesh | bruit calibré sur moissons réelles, testé hors-échantillon |
 | NV | diamant naturel vs ¹²C purifié | résurrection 0.02 (meurt) vs 0.32 (survit) |
 | cQED | T1/T2 dérivés du résonateur | T1=112µs (Purcell), T2 224µs→11.7µs (10→100mK, Gambetta) |
+| Filtre | Purcell passe-bande 10MHz | S=160001, T1→300µs intrinsèque, T2→600µs |
 | S21 | extracteur hanger depuis VNA | **Q_l 0.06%, Q_c 1%, τ 0.02%, f_r 3e-8** |
 
-**Statut : 20/20 TESTS, 5 FRONTS.** L'étalonnage absolu de l'univers.
+**Statut : 23/23 TESTS, 6 FRONTS.** L'étalonnage absolu de l'univers.
 
 ---
 
@@ -59,6 +60,7 @@ pytest tests/ -q                    # 20/20
 python3 demos/effet_horizon.py      # mort et résurrection de l'intrication
 python3 demos/decoherence_microondes.py  # T1/T2 cQED + Ramsey
 python3 demos/fit_s21.py            # VNA -> Q -> T1/T2 mesurés
+python3 demos/purcell_protection.py  # filtre Purcell -> T1 intrinseque
 ```
 
 ---
@@ -96,6 +98,11 @@ python3 demos/fit_s21.py            # VNA -> Q -> T1/T2 mesurés
 
 <img src="demos/decoherence_microondes.png" width="100%" alt="cQED Ramsey"/>
 
+### Filtre Purcell — T1 au-delà de la limite 🛡️
+❓ Dépasser la limite Purcell sous fort couplage ? 🔧 passe-bande 10MHz sur résonateur (Reed/Houck 2010) : S = 1+(2Δ/κ_f)². 🏆 **S=160001, T1p 178µs→28.5s, T1→300µs intrinsèque, T2 224→600µs**. Solveur Lindblad étendu (même API, modèle branché).
+
+<img src="demos/purcell_protection.png" width="100%" alt="Filtre Purcell"/>
+
 ### S21 — du VNA au T1/T2 📉
 ❓ Extraire Q_int/Q_ext d'une trace réelle ? 🔧 modèle hanger (Probst 2015) : délai sur ailes → cercle Kasa → phase vs f → diamètre → point fixe τ → polish joint. Validé sur trace synthétique réaliste (bruit VNA). 🏆 **Q_l 0.06%, Q_c 1%, τ 0.02%, f_r 3e-8** ; `from_s21()` → T1/T2 mesurés (111.9/223.8µs). Q_int en surcouplé : ×2-3 — **limite fondamentale prouvée**, pas cachée. CSV banc : `f,I,Q` ou `f,mag_dB,phase_deg`.
 
@@ -112,6 +119,7 @@ python3 demos/fit_s21.py            # VNA -> Q -> T1/T2 mesurés
 | NV | résurrection naturel / purifié | 0.02 / 0.32 | bain ¹³C |
 | cQED | T1 / T2 (10mK) / T2 (100mK) | 112µs / 224µs / 11.7µs | Ramsey < 2% |
 | S21 | Q_l / Q_c / τ / f_r | 0.06% / 1% / 0.02% / 3e-8 | trace bruitée |
+| Filtre | S / T1 / T2 | 160001 / 300µs / 600µs | Lindblad < 2% |
 
 ---
 
@@ -174,7 +182,7 @@ flowchart TB
 ## 9. 🗺️ Roadmap
 
 1. 📡 **Vraie trace** : brancher une S21 de banc (le CSV est prêt, `demos/s21_synth.csv` = format)
-2. 🧊 **Filtre Purcell** : T1 au-delà de la limite (cQED v0.2)
+2. 🧊 **Filtre Purcell** : T1 au-delà de la limite (cQED v0.2) ✅
 3. 📰 **Publication** : l'article de la symbiose (chef seul décide)
 
 ---

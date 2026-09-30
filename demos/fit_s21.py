@@ -1,7 +1,9 @@
 """Fit S21 -> Q mesurés -> T1/T2 banc. Trace synthétique réaliste + figure.
 Format CSV : f,I,Q (banc : export VNA). MIT."""
+import os as _os, pathlib as _pl  # RATISS: chemins portables (dépôts clonés côte à côte, ou RATISS_HOME)
+_RATISS_HOME = _os.environ.get('RATISS_HOME') or str(_pl.Path(__file__).resolve().parents[2])
 import sys
-sys.path.insert(0, '/home/user/RATISS-QVM')
+sys.path.insert(0, (_RATISS_HOME + '/RATISS-QVM'))
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -9,7 +11,7 @@ import matplotlib.pyplot as plt
 from ratiss_qpu.s21 import synth_trace, fit_s21, s21_hanger, save_csv
 from ratiss_qpu.microondes import CavityQED
 
-D = '/home/user/RATISS-QVM/demos/'
+D = (_RATISS_HOME + '/RATISS-QVM/demos/')
 f, s, truth = synth_trace()
 save_csv(D + 's21_synth.csv', f, s)
 r = fit_s21(f, s)

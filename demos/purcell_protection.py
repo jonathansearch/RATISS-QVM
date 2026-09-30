@@ -1,7 +1,9 @@
 """Filtre Purcell : T1p x S, S = 1+(2.D/kf)^2 (Reed/Houck 2010).
 T1 -> limite intrinseque, T2 x2.7. Figure demos/purcell_protection.png. MIT."""
+import os as _os, pathlib as _pl  # RATISS: chemins portables (dépôts clonés côte à côte, ou RATISS_HOME)
+_RATISS_HOME = _os.environ.get('RATISS_HOME') or str(_pl.Path(__file__).resolve().parents[2])
 import sys
-sys.path.insert(0, '/home/user/RATISS-QVM')
+sys.path.insert(0, (_RATISS_HOME + '/RATISS-QVM'))
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -9,7 +11,7 @@ import matplotlib.pyplot as plt
 from ratiss_qpu.microondes import CavityQED
 from ratiss_qpu.coherence import evolve_open
 
-D = '/home/user/RATISS-QVM/demos/'
+D = (_RATISS_HOME + '/RATISS-QVM/demos/')
 sans = CavityQED()
 avec = CavityQED(kappa_filt_hz=10e6)
 print(f"[purcell] S={avec.suppression():.0f} T1 {sans.t1_s()*1e6:.1f}->{avec.t1_s()*1e6:.1f}us "

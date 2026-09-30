@@ -1,7 +1,9 @@
 """Décohérence micro-ondes réelle : T1/T2 dérivés du résonateur (Purcell+Gambetta),
 vs NV phénoménologique. Figure demos/decoherence_microondes.png. MIT."""
+import os as _os, pathlib as _pl  # RATISS: chemins portables (dépôts clonés côte à côte, ou RATISS_HOME)
+_RATISS_HOME = _os.environ.get('RATISS_HOME') or str(_pl.Path(__file__).resolve().parents[2])
 import sys
-sys.path.insert(0, '/home/user/RATISS-QVM')
+sys.path.insert(0, (_RATISS_HOME + '/RATISS-QVM'))
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -33,5 +35,5 @@ ax[1].set_xlabel('t (us)'); ax[1].set_ylabel('|rho01| (Ramsey)')
 ax[1].legend(); ax[1].set_title('Decoherence : Ramsey |+>')
 fig.suptitle('RATISS-QVM : decoherence micro-ondes reelle (Purcell + Gambetta)')
 fig.tight_layout()
-fig.savefig('/home/user/RATISS-QVM/demos/decoherence_microondes.png', dpi=90)
+fig.savefig((_RATISS_HOME + '/RATISS-QVM/demos/decoherence_microondes.png'), dpi=90)
 print('[demo] png ok')

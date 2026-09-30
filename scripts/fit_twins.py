@@ -1,8 +1,10 @@
 """Ajuste p2q par jumeau : train λ={0.4,0.8,1.2,1.6}, TEST {0.6,1.0,1.4}.
 Écrit p2q_fit + score test dans rqvm/data/twins.json. MIT."""
+import os as _os, pathlib as _pl  # RATISS: chemins portables (dépôts clonés côte à côte, ou RATISS_HOME)
+_RATISS_HOME = _os.environ.get('RATISS_HOME') or str(_pl.Path(__file__).resolve().parents[2])
 import json
 import sys
-sys.path.insert(0, '/home/user/RATISS-QVM')
+sys.path.insert(0, (_RATISS_HOME + '/RATISS-QVM'))
 from rqvm import pop, zz_contact, TwinBackend, load_twin_data
 
 TRAIN = (0.4, 0.8, 1.2, 1.6)
@@ -26,5 +28,5 @@ for name in ('kingston', 'marrakesh'):
                        'test_pred': test,
                        'test_real': {l: round(real[l], 4) for l in TEST}}
     print(f'{name}: p2q={best} test_pred={test} test_real={tw[name]["fit"]["test_real"]}')
-json.dump(tw, open('/home/user/RATISS-QVM/rqvm/data/twins.json', 'w'), indent=1)
+json.dump(tw, open((_RATISS_HOME + '/RATISS-QVM/rqvm/data/twins.json'), 'w'), indent=1)
 print('[fit] ok')

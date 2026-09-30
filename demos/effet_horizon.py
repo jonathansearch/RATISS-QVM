@@ -1,8 +1,10 @@
 """L'EFFET : 12 paires de Bell à cheval sur l'horizon, N=300, évaporation S02.
 L'intrication MEURT à la chute et RESSUSCITE à la réémission (Page quantique).
 Portes appliquées EN DIRECT dans l'univers. Sortie : effet_horizon.gif. MIT."""
+import os as _os, pathlib as _pl  # RATISS: chemins portables (dépôts clonés côte à côte, ou RATISS_HOME)
+_RATISS_HOME = _os.environ.get('RATISS_HOME') or str(_pl.Path(__file__).resolve().parents[2])
 import sys
-sys.path.insert(0, '/home/user/RATISS-QVM')
+sys.path.insert(0, (_RATISS_HOME + '/RATISS-QVM'))
 import json
 import numpy as np
 import matplotlib
@@ -59,7 +61,7 @@ for s in range(STEPS + 1):
     if s == STEPS:
         break
     U.step()
-json.dump(series, open('/home/user/RATISS-QVM/demos/effet_horizon.json', 'w'))
+json.dump(series, open((_RATISS_HOME + '/RATISS-QVM/demos/effet_horizon.json'), 'w'))
 cs = np.array([p['Cmean'] for p in series])
 print(f"[effet] C: 1.0 -> min={cs.min():.3f} -> fin={cs[-1]:.3f} | F: {series[0]['F']} -> {min(p['F'] for p in series):.3f} -> {series[-1]['F']}")
 from rqvm.qsubstrate import measure_1q
@@ -100,5 +102,5 @@ def frame(i):
 
 
 FuncAnimation(fig, frame, frames=NF, interval=90).save(
-    '/home/user/RATISS-QVM/demos/effet_horizon.gif', writer='pillow')
+    (_RATISS_HOME + '/RATISS-QVM/demos/effet_horizon.gif'), writer='pillow')
 print('[effet] gif ok')

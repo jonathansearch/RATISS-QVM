@@ -6,10 +6,10 @@
 
 <p align="center">
 <img src="https://img.shields.io/badge/Tests-20%2F20-brightgreen.svg" alt="Tests"/>
-<img src="https://img.shields.io/badge/Univers-300q-blue.svg" alt="Universe"/>
+<img src="https://img.shields.io/badge/Universe-300q-blue.svg" alt="Universe"/>
 <img src="https://img.shields.io/badge/T1_T2-measured-orange.svg" alt="cQED"/>
 <img src="https://img.shields.io/badge/S21-Ql_0.06%25-red.svg" alt="S21"/>
-<img src="https://img.shields.io/badge/Licence-MIT-yellow.svg" alt="MIT"/>
+<img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT"/>
 </p>
 
 <p align="center"><img src="images/hero-qvm.png" width="100%" alt="Quantum processor"/></p>
